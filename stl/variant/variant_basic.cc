@@ -2,6 +2,7 @@
 #include <string>
 #include <variant>
 #include <vector>
+#include <cassert>
 using namespace std;
 
 // helper function
