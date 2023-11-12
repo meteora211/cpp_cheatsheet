@@ -12,4 +12,5 @@ include(CompileFiles)
 
 add_subdirectory(basic)
 add_subdirectory(stl)
+add_subdirectory(idioms)
 add_subdirectory(temp)
