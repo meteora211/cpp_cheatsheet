@@ -19,20 +19,19 @@ public:
     cv_.notify_one();
   }
 
-  // void pop() {
-  //   std::unique_lock<std::mutex> lock(mutex_);
-  //   queue_.pop();
-  // }
-
-  bool pop(T& elem) {
+  void wait_pop(T& elem) {
     std::unique_lock<std::mutex> lock(mutex_);
     cv_.wait(lock, [&]{return !queue_.empty();});
-    if (!queue_.empty()) {
-      elem = queue_.front();
-      queue_.pop();
-      return true;
-    }
-    return false;
+    elem = std::move(queue_.front());
+    queue_.pop();
+  }
+
+  bool try_pop(T& elem) {
+    std::unique_lock<std::mutex> lock(mutex_);
+    if (queue_.empty()) return false;
+    elem = std::move(queue_.front());
+    queue_.pop();
+    return true;
   }
 
   bool empty() {
