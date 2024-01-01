@@ -1,0 +1,4 @@
+file(GLOB SOURCE_FILES "*.cc")
+
+set(CMAKE_CXX_STANDARD 17)
+CompileFiles(${SOURCE_FILES})
