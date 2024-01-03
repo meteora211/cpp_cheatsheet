@@ -3,9 +3,9 @@
 template<typename T>
 struct array_size;
 
-template<typename T, size_t N>
+template<typename T, std::size_t N>
 struct array_size<T[N]> {
-  static constexpr size_t len = N;
+  static constexpr std::size_t len = N;
   using value_type = T;
 };
 

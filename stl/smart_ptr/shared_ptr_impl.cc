@@ -49,7 +49,7 @@ public:
   T* operator->() {
     return _ptr;
   }
-  T operator*() {
+  T& operator*() {
     return *_ptr;
   }
   T* get() {
