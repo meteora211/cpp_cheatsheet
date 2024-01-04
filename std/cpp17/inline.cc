@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <string_view>
 
 // PROBLEM: how to define a static variable inside class
 // class MyClass {
@@ -31,9 +32,15 @@ struct MyClass3 {
   inline static std::string msg{"3.OK"};
 };
 
+// C++17: constexpr imply inline
+struct MyClass4 {
+  static constexpr std::string_view msg{"4.OK"};
+};
+
 int main() {
   std::cout << MyClass1::msg << std::endl;
   std::cout << MyClass2::getMsg() << std::endl;
   std::cout << VTmsg<> << std::endl;
   std::cout << MyClass3::msg << std::endl;
+  std::cout << MyClass4::msg << std::endl;
 }
