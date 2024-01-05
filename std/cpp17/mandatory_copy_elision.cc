@@ -13,6 +13,9 @@ public:
   Printer(Printer&& rhs) {
     cout << this << " move ctor called" << endl;
   }
+  // XXX: C++11 throw compiler error if copy/move ctor is deleted
+  // Printer(const Printer& rhs) = delete;
+  // Printer(Printer&& rhs) = delete;
   void print() const {
     cout << "Printer address: " << this << endl;
   }
@@ -33,6 +36,7 @@ Printer bar() {
 }
 
 int main() {
+  // XXX: C++11 prints same result with C++17 if -fno-elide-constructors(RVO) is not enabled
   cout << "---------------" << endl;
   foo(Printer());
   cout << "---------------" << endl;

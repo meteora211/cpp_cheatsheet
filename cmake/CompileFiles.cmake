@@ -9,7 +9,7 @@ function(CompileFiles SOURCE_FILES)
         CXX_EXTENSIONS NO
         # COMPILE_FLAGS "-Wall -fno-elide-constructors"
     )
-    target_compile_options(${executable_name} PRIVATE -O3 -Wall -fno-elide-constructors)
+    # target_compile_options(${executable_name} PRIVATE -O3 -Wall -fno-elide-constructors)
     install(TARGETS ${executable_name} DESTINATION "${INSTALL_BIN_DIR}/${FOLDER_NAME}")
   endforeach()
 endfunction()
