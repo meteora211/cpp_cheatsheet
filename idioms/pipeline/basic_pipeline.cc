@@ -4,6 +4,7 @@
 #include <thread>
 #include <memory>
 #include <mutex>
+#include <condition_variable>
 
 void preprocess(const std::vector<int>& inputs, std::shared_ptr<BlockingQueue<int>> input_queue) {
   std::cout << "preprocess" << std::endl;
