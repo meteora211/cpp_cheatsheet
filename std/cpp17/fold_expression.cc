@@ -39,14 +39,36 @@ const T& spaceBefore(const T& arg) {
   return arg;
 }
 
+template <typename T1, typename... TN>
+struct IsHomogeneous {
+  static constexpr bool value = (std::is_same_v<T1, TN>&& ...);
+};
+
 template<typename First, typename... Args>
 void print(const First& f, const Args&... args) {
   std::cout << f;
   (std::cout << ... << spaceBefore(args)) << std::endl;
 }
 
+template<typename T>
+void doubleprint(const T& in) {
+  std::cout << in * 2 << " ";
+}
+
+template<typename... Args>
+void doubleprints(const Args&... args) {
+  std::cout << "double left prints:" << std::endl;
+  (..., doubleprint(args));
+  std::cout << std::endl;
+  std::cout << "double right prints:" << std::endl;
+  (doubleprint(args), ...);
+  std::cout << std::endl;
+}
+
 int main() {
   static_assert(leftfold<1,2,3> == -8);
   static_assert(rightfold<1,2,3> == 4);
   print(1,2,3);
+  doubleprints(1,2.0, 3);
+  std::cout << IsHomogeneous<int, decltype(42), int>::value << std::endl;
 }
