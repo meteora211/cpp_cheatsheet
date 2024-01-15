@@ -49,6 +49,7 @@ int main() {
   assert(var6.index() == 1);
 
   // get
+  // XXX: get invalid index cause an runtime error: "std::get: wrong index for variant"
   cout << "0) " << get<int>(var0) << "\n"
        << "1) " << get<0>(var1) << "\n"
        << "2) " << get<1>(var2) << "\n"
