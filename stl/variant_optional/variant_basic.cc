@@ -74,7 +74,7 @@ int main() {
   }
   {
     // changing value
-    std::variant<int, int, std::string> var7; // index = 0, val = 0
+    std::variant<int, int, std::string> var; // index = 0, val = 0
     var = "hello"; // index = 2; val = "hello"
     var.emplace<1>(42); // index = 1, val = 42
   }
