@@ -1,4 +1,4 @@
 add_subdirectory(smart_ptr)
-add_subdirectory(variant_optional)
+add_subdirectory(variant_optional_any)
 add_subdirectory(priority_queue)
 add_subdirectory(string_view)
