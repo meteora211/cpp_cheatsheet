@@ -34,8 +34,11 @@ private:
   template<typename T>
   class ShapeModel : public ShapeConcept {
   public:
-    explicit ShapeModel(T&& x): x_{std::forward<T>(x)} {}
-    // explicit ShapeModel(T x): x_{x} {}
+    // XXX: T&& is still rvalue reference since it's class template not function template.
+    // which means following format cause an issue due to binding a rvalue to lvalue;
+    // explicit ShapeModel(T&& x): x_{std::forward<T>(x)} {}
+    
+    explicit ShapeModel(const T& x): x_{x} {}
 
     void draw() const override {
       impl::draw(x_);
