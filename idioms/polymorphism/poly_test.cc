@@ -1,19 +1,34 @@
 #include <iostream>
 #include <vector>
+#include <tuple>
+#include <variant>
 using namespace std;
 
+// **************************************************************
+//                    dynamic
+// **************************************************************
 class ShapeDynamic {
 public:
   virtual ~ShapeDynamic() = default;
   virtual void draw() = 0;
 };
 
-class CircleDynamic : ShapeDynamic {
+class CircleDynamic : public ShapeDynamic {
 public:
   void draw() override {
     std::cout << "circle dynamic draw" << std::endl;
   }
 };
+class RectDynamic : public ShapeDynamic {
+public:
+  void draw() override {
+    std::cout << "circle dynamic draw" << std::endl;
+  }
+};
+
+void draw_dynamic(ShapeDynamic* shape) {
+  shape->draw();
+}
 
 // **************************************************************
 //                    CRTP classic 
@@ -41,7 +56,7 @@ public:
 };
 
 template<typename T>
-void draw(ShapeCRTP<T>& s) {
+void draw_crtp(ShapeCRTP<T>& s) {
   std::cout << " ----- ShapeCRTP ----- " << std::endl;
   s.draw();
   std::cout << " ----- ShapeCRTP ----- " << std::endl;
@@ -74,21 +89,95 @@ public:
 // Can not declare argument with base class. CRTP is static polymorphism
 // void draw(const ShapeCRTPDeduce& s)
 template <typename T>
-void draw(const T& s) {
+void draw_deduce(const T& s) {
   std::cout << " ----- ShapeCRTPDeduce ----- " << std::endl;
   s.draw();
   std::cout << " ----- ShapeCRTPDeduce ----- " << std::endl;
 }
 
-int main() {
+// **************************************************************
+//                    Variant
+// **************************************************************
+class CircleVar {
+public:
+  void draw() {
+    std::cout << "circle variant draw" << std::endl;
+  }
+};
 
-  // vector<ShapeCRTP> v_crtp{CircleCRTP(), RectCRTP()};
-  // draw(v_crtp);
+class RectVar {
+public:
+  void draw() {
+    std::cout << "rect variant draw" << std::endl;
+  }
+};
+
+using ShapeVar = std::variant<CircleVar, RectVar>;
+
+void draw_var(ShapeVar& shape) {
+  auto visitor = [](auto& s){
+    s.draw();
+  };
+  std::visit(visitor, shape);
+}
+
+// **************************************************************
+//                    Tuple
+// **************************************************************
+class CircleTup {
+public:
+  void draw() {
+    std::cout << "circle tuple draw" << std::endl;
+  }
+};
+
+class RectTup {
+public:
+  void draw() {
+    std::cout << "rect tuple draw" << std::endl;
+  }
+};
+
+using ShapeTup = std::tuple<CircleTup, RectTup>;
+
+void draw_tup(ShapeTup& shape) {
+  auto visitor = [](auto& s){
+    s.draw();
+  };
+  auto tup_apply = [=]<typename ...T>(T&... args) {
+    (visitor(args),...);
+  };
+  std::apply(tup_apply, shape);
+}
+
+int main() {
+  std::cout << "\n--------------------------------" << std::endl;
+  CircleDynamic c0{};
+  RectDynamic r0{};
+  draw_dynamic(&c0);
+  draw_dynamic(&r0);
+  std::cout << "--------------------------------\n" << std::endl;
+
+  std::cout << "\n--------------------------------" << std::endl;
   CircleCRTP c1; c1.draw();
   RectCRTP r1; r1.draw();
-  draw(c1); draw(r1);
+  draw_crtp(c1); draw_crtp(r1);
+  std::cout << "--------------------------------\n" << std::endl;
 
+  std::cout << "\n--------------------------------" << std::endl;
   CircleCRTPDeduce c2; c2.draw();
   RectCRTPDeduce r2; r2.draw();
-  draw(c2); draw(r2);
+  draw_deduce(c2); draw_deduce(r2);
+  std::cout << "--------------------------------\n" << std::endl;
+
+  std::cout << "\n--------------------------------" << std::endl;
+  ShapeVar c3{CircleVar{}};
+  ShapeVar r3{RectVar{}};
+  draw_var(c3); draw_var(r3);
+  std::cout << "--------------------------------\n" << std::endl;
+
+  std::cout << "\n--------------------------------" << std::endl;
+  ShapeTup s0{CircleTup{}, RectTup{}};
+  draw_tup(s0);
+  std::cout << "--------------------------------\n" << std::endl;
 }

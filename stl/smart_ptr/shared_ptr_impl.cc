@@ -75,7 +75,7 @@ public:
 
 private:
   T* _ptr;
-  unsigned int* _refcount;
+  mutable unsigned int* _refcount;
 };
 
 int main() {
