@@ -43,7 +43,7 @@ int main() {
   TestClass t4{};     // default init
   TestClass t5 = TestClass();     // value init. it requires copy ctor without copy elision
   TestClass t6 = t1;     // copy init
-  TestClass t7 = TestClass("t7");     // copy init
+  TestClass t7 = TestClass("t7");     // copy init. create tmp then copy. It requires cxx11(no copy elision) AND with -fno-elide-constructors)
   t7 = t1; // copy assign
 
   f(t1);
