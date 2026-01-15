@@ -150,6 +150,66 @@ void draw_tup(ShapeTup& shape) {
   std::apply(tup_apply, shape);
 }
 
+// **************************************************************
+//                    Concept
+// **************************************************************
+template<typename T>
+concept CShape = requires (T shape) {
+  shape.draw();
+};
+
+template<CShape... TS>
+struct ShapeCon {
+  ShapeCon(auto s) : shape(s) {}
+  void set_shape(auto s) {
+    shape = s;
+  }
+  void draw() {
+    std::visit([](auto& s){s.draw();}, shape);
+  }
+  std::variant <TS...> shape{};
+};
+
+struct Circle {
+  Circle() = default;
+  explicit Circle(int r): r{r} {}
+  void draw() {
+    std::cout << "circle draw" << r << std::endl;
+  }
+  int r{0};
+};
+
+struct Rect {
+  Rect() = default;
+  explicit Rect(int r): r{r} {}
+  void draw() {
+    std::cout << "rect draw" << r << std::endl;
+  }
+  int r{0};
+};
+
+template <CShape... TS>
+struct ShapeConVec {
+  template <typename T>
+  void push(T&& elem) {
+    std::get<vector<T>>(shape_vec).push_back(std::forward<T>(elem));
+  }
+  void draw() {
+    std::apply(
+      [](auto&... vec){
+        ([&vec](){
+          for (auto& v:vec) {v.draw();}
+        }(),...);
+      }
+      ,shape_vec);
+  }
+  std::tuple<std::vector<TS>...> shape_vec;
+};
+
+void draw_con(auto& shape_con) {
+  shape_con.draw();
+}
+
 int main() {
   std::cout << "\n--------------------------------" << std::endl;
   CircleDynamic c0{};
@@ -180,4 +240,21 @@ int main() {
   ShapeTup s0{CircleTup{}, RectTup{}};
   draw_tup(s0);
   std::cout << "--------------------------------\n" << std::endl;
+
+  std::cout << "\n--------------------------------" << std::endl;
+  ShapeCon<Circle, Rect> s1{Circle{}};
+  s1.draw();
+  draw_con(s1);
+  s1.set_shape(Rect{});
+  s1.draw();
+  draw_con(s1);
+
+  ShapeConVec<Circle, Rect> s2;
+  s2.push(Circle{0});
+  s2.push(Circle{1});
+  s2.push(Rect{2});
+  s2.push(Rect{3});
+  s2.draw();
+  std::cout << "--------------------------------\n" << std::endl;
+
 }
